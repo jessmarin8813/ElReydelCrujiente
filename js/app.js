@@ -10,7 +10,7 @@
 /* =========================
    I. Utilidades globales
    ========================= */
-   async function crearCombo() {
+async function crearCombo() {
   const nombre = document.getElementById('nombreCombo')?.value?.trim();
   if (!nombre) {
     alert('Debes ingresar un nombre para el combo.');
@@ -44,7 +44,7 @@
 
     const text = await res.text();
     let data;
-    try { data = JSON.parse(text); } catch(e) { data = { _raw: text }; }
+    try { data = JSON.parse(text); } catch (e) { data = { _raw: text }; }
 
     if (!res.ok) {
       const msg = data?.error || data?._raw || `HTTP ${res.status}`;
@@ -213,7 +213,7 @@ async function guardarProducto(id) {
 
     const text = await res.text();
     let data;
-    try { data = JSON.parse(text); } catch(e) { data = { _raw: text }; }
+    try { data = JSON.parse(text); } catch (e) { data = { _raw: text }; }
 
     if (!res.ok) {
       const msg = data?.error || data?._raw || `HTTP ${res.status}`;
@@ -296,24 +296,77 @@ function renderCarrito() {
   const ul = document.getElementById('listaCarrito');
   if (!ul) return;
   ul.innerHTML = '';
+
+  if (carrito.length === 0) {
+    ul.innerHTML = '<p style="text-align:center; color:#666; font-style:italic; padding:10px;">Carrito vacío</p>';
+    actualizarTotal();
+    return;
+  }
+
   carrito.forEach((p, index) => {
     const precioUSD = parseFloat(p.precio) || 0;
-    const precioBs = precioUSD * tasaBs;
     const subtotalUSD = precioUSD * (p.cantidad || 0);
-    const subtotalBs = subtotalUSD * tasaBs;
+
     const li = document.createElement('li');
+    li.style.background = "#fff";
+    li.style.border = "1px solid #eee";
+    li.style.borderRadius = "8px";
+    li.style.marginBottom = "10px";
+    li.style.padding = "10px";
+    li.style.display = "flex";
+    li.style.flexDirection = "column";
+    li.style.gap = "8px";
+
     li.innerHTML = `
-      <div class="item-carrito">
-        <strong>${escapeHtml(p.nombre)}</strong><br>
-        $${precioUSD.toFixed(2)} | Bs ${precioBs.toFixed(2)} x
-        <input type="number" value="${p.cantidad}" min="0.01" step="0.01" onchange="actualizarCantidad(${index}, this.value)">
-        = $${subtotalUSD.toFixed(2)} | Bs ${subtotalBs.toFixed(2)}
-        <button onclick="eliminarDelCarrito(${index})">❌</button>
+      <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+            <strong style="font-size: 1.05em; color:#333;">${escapeHtml(p.nombre)}</strong>
+            <div style="font-size: 0.85em; color:#666;">Precio: $${precioUSD.toFixed(2)}</div>
+        </div>
+        <button onclick="eliminarDelCarrito(${index})" style="background:#ffdddd; color:#d00; border:none; border-radius:4px; padding:4px 8px; cursor:pointer; font-weight:bold;">✕</button>
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items:end;">
+        <div>
+            <label style="display:block; font-size: 0.8em; color:#555; margin-bottom:2px;">Cantidad</label>
+            <input type="number" value="${p.cantidad}" min="0.001" step="0.001" 
+                   style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px;"
+                   onchange="actualizarCantidad(${index}, this.value)">
+        </div>
+        <div>
+            <label style="display:block; font-size: 0.8em; color:#555; margin-bottom:2px;">Total ($)</label>
+            <input type="number" value="${subtotalUSD.toFixed(2)}" min="0.01" step="0.01" 
+                   style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-weight:bold;"
+                   onchange="actualizarCantidadPorTotal(${index}, this.value)">
+        </div>
       </div>
     `;
     ul.appendChild(li);
   });
   actualizarTotal();
+}
+
+function actualizarCantidadPorTotal(index, totalUSD) {
+  const total = parseFloat(totalUSD) || 0;
+  const precio = parseFloat(carrito[index].precio) || 0;
+
+  if (total <= 0) {
+    // Si pone 0, ¿borramos o dejamos en 0? Mejor dejar en 0 o mínimo.
+    actualizarCantidad(index, 0);
+    return;
+  }
+
+  if (precio > 0) {
+    // Cálculo inverso: Cantidad = Total / PrecioUnitario
+    // Usamos 3 decimales para precisión en peso (kg)
+    let nuevaCantidad = total / precio;
+    // Redondear a 3 decimales para evitar 0.33333333 infinite
+    nuevaCantidad = Math.round(nuevaCantidad * 1000) / 1000;
+
+    actualizarCantidad(index, nuevaCantidad);
+  } else {
+    alert("El precio del producto es 0, no se puede calcular por total.");
+  }
 }
 
 /* =========================
@@ -364,10 +417,10 @@ async function cargarVentas() {
 
       // compat: preferimos total_pedido_usd y total_pagado_usd, si no están caer a legacy
       const totalPedido = (typeof p.total_pedido_usd !== 'undefined') ? parseFloat(p.total_pedido_usd) :
-                          (typeof p.total_pedido !== 'undefined' ? parseFloat(p.total_pedido) :
-                           (typeof p.total !== 'undefined' ? parseFloat(p.total) : 0));
+        (typeof p.total_pedido !== 'undefined' ? parseFloat(p.total_pedido) :
+          (typeof p.total !== 'undefined' ? parseFloat(p.total) : 0));
       const totalPagado = (typeof p.total_pagado_usd !== 'undefined') ? parseFloat(p.total_pagado_usd) :
-                          (typeof p.total_pagado !== 'undefined' ? parseFloat(p.total_pagado) : 0);
+        (typeof p.total_pagado !== 'undefined' ? parseFloat(p.total_pagado) : 0);
 
       const isPagadoCalcBackend = (typeof p.is_pagado_calc !== 'undefined') ? Boolean(p.is_pagado_calc) : null;
       const isPagadoCalc = (isPagadoCalcBackend === null) ? ((totalPagado + EPS) >= totalPedido) : isPagadoCalcBackend;
@@ -488,50 +541,50 @@ function verDetalle(id) {
 
   // llamar verificar_pago con id y pedido_id (compatibilidad)
   fetch(`api/verificar_pago.php?id=${encodeURIComponent(id)}&pedido_id=${encodeURIComponent(id)}`)
-  .then(res => res.json())
-  .then(data => {
-    const estadoPago = document.getElementById('estadoPago');
-    const botonPago = document.getElementById('botonPago');
-    if (!estadoPago || !botonPago) return;
+    .then(res => res.json())
+    .then(data => {
+      const estadoPago = document.getElementById('estadoPago');
+      const botonPago = document.getElementById('botonPago');
+      if (!estadoPago || !botonPago) return;
 
-    const t = normalizarTotales(data);
-    const EPS = 0.01;
-    const pagadoCalc = (t.totalPagadoUsd + EPS) >= t.totalPedidoUsd;
-    const tasa = (data.tasa_bcv !== undefined) ? Number(data.tasa_bcv) : (data.tasa_pedido !== undefined ? Number(data.tasa_pedido) : tasaBs || 1);
+      const t = normalizarTotales(data);
+      const EPS = 0.01;
+      const pagadoCalc = (t.totalPagadoUsd + EPS) >= t.totalPedidoUsd;
+      const tasa = (data.tasa_bcv !== undefined) ? Number(data.tasa_bcv) : (data.tasa_pedido !== undefined ? Number(data.tasa_pedido) : tasaBs || 1);
 
-    if (pagadoCalc) {
-      estadoPago.innerHTML = `<strong style="color:green;">✅ Pedido pagado</strong>`;
-      botonPago.disabled = true;
-    } else {
-      const totalBs = t.totalBs !== null ? t.totalBs : (t.totalPedidoUsd * tasa);
-      const abonadoBs = t.pagadoBs !== null ? t.pagadoBs : (t.totalPagadoUsd * tasa);
-      const deudaUsd = Math.max(0, t.totalPedidoUsd - t.totalPagadoUsd);
-      const deudaBs = (totalBs !== null && abonadoBs !== null) ? (totalBs - abonadoBs) : null;
+      if (pagadoCalc) {
+        estadoPago.innerHTML = `<strong style="color:green;">✅ Pedido pagado</strong>`;
+        botonPago.disabled = true;
+      } else {
+        const totalBs = t.totalBs !== null ? t.totalBs : (t.totalPedidoUsd * tasa);
+        const abonadoBs = t.pagadoBs !== null ? t.pagadoBs : (t.totalPagadoUsd * tasa);
+        const deudaUsd = Math.max(0, t.totalPedidoUsd - t.totalPagadoUsd);
+        const deudaBs = (totalBs !== null && abonadoBs !== null) ? (totalBs - abonadoBs) : null;
 
-      estadoPago.innerHTML = `
+        estadoPago.innerHTML = `
         <strong style="color:red;">💰 Deuda pendiente</strong><br>
         Abonado: Bs ${abonadoBs !== null ? Number(abonadoBs).toFixed(2) : '0.00'} ≈ $${t.totalPagadoUsd.toFixed(2)}<br>
         Total: $${t.totalPedidoUsd.toFixed(2)} / Bs ${totalBs !== null ? Number(totalBs).toFixed(2) : '—'}<br>
         Deuda: $${deudaUsd.toFixed(2)} / Bs ${deudaBs !== null ? Number(deudaBs).toFixed(2) : '—'}<br>
         Tasa: Bs ${tasa.toFixed(2)} / $
       `;
-      botonPago.disabled = false;
-    }
-    cargarMenuAdicional(id);
-  })
-  .catch(err => {
-    console.error('Error al verificar pago:', err);
-    const estadoPago = document.getElementById('estadoPago'); if (estadoPago) estadoPago.innerText = 'No se pudo verificar el estado de pago.';
-  });
+        botonPago.disabled = false;
+      }
+      cargarMenuAdicional(id);
+    })
+    .catch(err => {
+      console.error('Error al verificar pago:', err);
+      const estadoPago = document.getElementById('estadoPago'); if (estadoPago) estadoPago.innerText = 'No se pudo verificar el estado de pago.';
+    });
 }
 
 // Normalizador de respuesta de verificar_pago
 function normalizarTotales(resp) {
   const totalPedidoUsd = (resp.total_pedido_usd !== undefined) ? parseFloat(resp.total_pedido_usd)
-                         : (resp.total_pedido !== undefined ? parseFloat(resp.total_pedido) :
-                            (resp.total_publico !== undefined ? parseFloat(resp.total_publico) : 0));
+    : (resp.total_pedido !== undefined ? parseFloat(resp.total_pedido) :
+      (resp.total_publico !== undefined ? parseFloat(resp.total_publico) : 0));
   const totalPagadoUsd = (resp.total_pagado_usd !== undefined) ? parseFloat(resp.total_pagado_usd)
-                          : (resp.total_pagado !== undefined ? parseFloat(resp.total_pagado) : 0);
+    : (resp.total_pagado !== undefined ? parseFloat(resp.total_pagado) : 0);
 
   const tasa = resp.tasa_bcv !== undefined ? parseFloat(resp.tasa_bcv) : (resp.tasa_pedido !== undefined ? parseFloat(resp.tasa_pedido) : null);
 
@@ -594,12 +647,12 @@ async function registrarPago() {
 
     alert(data.mensaje || 'Pago registrado con éxito');
 
-    ['efectivo','tarjeta','divisas','pagomovil'].forEach(id => { const el = document.getElementById(id); if (el) el.value = 0; });
+    ['efectivo', 'tarjeta', 'divisas', 'pagomovil'].forEach(id => { const el = document.getElementById(id); if (el) el.value = 0; });
 
     // preferir campos *_usd devueltos por API, fallback a legacy
     const nuevosTotalPedido = (data.total_pedido_usd !== undefined) ? data.total_pedido_usd : (data.total_pedido !== undefined ? data.total_pedido : data.total);
     const nuevosTotalPagado = (data.total_pagado_usd !== undefined) ? data.total_pagado_usd : (data.total_pagado !== undefined ? data.total_pagado : data.total_pagado_usd || 0);
-    actualizarFilaVenta(pedidoIdUsar, data.estado, parseFloat(nuevosTotalPedido||0), parseFloat(nuevosTotalPagado||0));
+    actualizarFilaVenta(pedidoIdUsar, data.estado, parseFloat(nuevosTotalPedido || 0), parseFloat(nuevosTotalPagado || 0));
 
     try { if (typeof verDetalle === 'function') verDetalle(pedidoIdUsar); } catch (e) { console.warn(e); }
     await new Promise(r => setTimeout(r, 150));
@@ -712,6 +765,9 @@ function actualizarCantidad(index, nuevaCantidad) {
   if (cantidad <= 0) eliminarDelCarrito(index);
   else { carrito[index].cantidad = cantidad; renderCarrito(); actualizarTotal(); }
 }
+window.actualizarCantidad = actualizarCantidad; // Exportar globalmente
+window.actualizarCantidadPorTotal = actualizarCantidadPorTotal; // Exportar globalmente
+
 function eliminarDelCarrito(index) { carrito.splice(index, 1); renderCarrito(); actualizarTotal(); }
 
 function agregarAlCarrito(id, nombre, precio) {
@@ -787,18 +843,18 @@ async function enviarPedido() {
     pedidoAbierto = null;
     window.pedidoAbierto = null;
 
-    if (tipoSelect) try { tipoSelect.value = 'para_llevar'; } catch (e) {}
+    if (tipoSelect) try { tipoSelect.value = 'para_llevar'; } catch (e) { }
     if (nombreInput) nombreInput.value = '';
 
     document.querySelectorAll('#productosDisponibles input[type="number"], #editorComboProductos input[type="number"], #menu input[type="number"], #menu input[type="text"], #listaCarrito input[type="number"]').forEach(el => {
-      try { el.value = ''; } catch (e) {}
+      try { el.value = ''; } catch (e) { }
     });
 
     try { renderCarrito(); } catch (e) { console.warn('renderCarrito no definido', e); }
-    try { mostrarVistaPrevia(); } catch (e) {}
-    try { cargarMesas(); } catch (e) {}
-    try { cargarVentas(); } catch (e) {}
-    try { actualizarResumenCaja(); } catch (e) {}
+    try { mostrarVistaPrevia(); } catch (e) { }
+    try { cargarMesas(); } catch (e) { }
+    try { cargarVentas(); } catch (e) { }
+    try { actualizarResumenCaja(); } catch (e) { }
 
     const editorModal = document.getElementById('editorComboModal');
     if (editorModal) editorModal.style.display = 'none';
@@ -872,19 +928,19 @@ function cargarPedidosCocina() {
     });
   }).catch(err => console.error('Error en cargarPedidosCocina:', err));
 }
-window.marcarPedidoListo = function (id) { fetch('api/marcar_listo.php', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({id}) }).then(() => cargarPedidosCocina()).catch(err => console.error('marcarPedidoListo error:', err)); };
+window.marcarPedidoListo = function (id) { fetch('api/marcar_listo.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id }) }).then(() => cargarPedidosCocina()).catch(err => console.error('marcarPedidoListo error:', err)); };
 
-window.eliminarProductoPedido = function(pedidoId, productoId) {
+window.eliminarProductoPedido = function (pedidoId, productoId) {
   if (!confirm('¿Eliminar este producto del pedido?')) return;
   fetch('api/eliminar_producto_pedido.php', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ pedido_id: pedidoId, producto_id: productoId }) })
     .then(async res => {
-      const text = await res.text(); let data; try { data = JSON.parse(text); } catch(e) { data = { _raw: text }; }
+      const text = await res.text(); let data; try { data = JSON.parse(text); } catch (e) { data = { _raw: text }; }
       if (!res.ok) { const msg = data && data.error ? data.error : (data && data._raw ? data._raw : `HTTP ${res.status}`); alert(`❌ No se pudo eliminar: ${msg}`); throw new Error(msg); }
       if (data.error) { alert(`❌ ${data.error}`); return; }
       alert(data.mensaje || 'Producto eliminado');
-      try { verDetalle(pedidoId); } catch(e) {}
-      try { cargarVentas(); } catch(e) {}
-      try { actualizarResumenCaja(); } catch(e) {}
+      try { verDetalle(pedidoId); } catch (e) { }
+      try { cargarVentas(); } catch (e) { }
+      try { actualizarResumenCaja(); } catch (e) { }
     })
     .catch(err => console.error('Error al eliminar producto:', err));
 };
@@ -969,11 +1025,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.__initMainOnce) return; window.__initMainOnce = true; console.log('[init-main] Ejecutando inicialización principal');
   cargarTasa();
   if (document.getElementById('mesas')) cargarMesas();
-  if (document.getElementById('menu')) { try { if (typeof cargarMenu === 'function') cargarMenu(); } catch {} }
+  if (document.getElementById('menu')) { try { if (typeof cargarMenu === 'function') cargarMenu(); } catch { } }
   if (document.getElementById('tipoPedido')) { actualizarVisibilidadMesas(); document.getElementById('tipoPedido').addEventListener('change', actualizarVisibilidadMesas); }
   if (document.getElementById('pedidos')) { cargarPedidosCocina(); if (!window.__cocinaInterval) window.__cocinaInterval = setInterval(cargarPedidosCocina, 5000); }
   if (document.getElementById('tablaVentas')) cargarVentas();
-  if (document.getElementById('tablaProductos')) { try { if (typeof cargarProductos === 'function') cargarProductos(); } catch {} }
+  if (document.getElementById('tablaProductos')) { try { if (typeof cargarProductos === 'function') cargarProductos(); } catch { } }
   if (document.getElementById('productosDisponibles')) cargarProductosParaCombo();
   if (document.getElementById('listaCombos')) cargarListaCombos();
 });
