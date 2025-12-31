@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,8 @@
       margin-top: 10px;
     }
 
-    th, td {
+    th,
+    td {
       border: 1px solid #ccc;
       padding: 6px;
       text-align: left;
@@ -76,21 +78,22 @@
     button:hover {
       background-color: #0056b3;
     }
-    
+
     /* Highlight Debtors specifically here if needed, though app.js handles it */
   </style>
 </head>
+
 <body onload="cargarVentas()">
   <nav>
-  <a href="index.php">🧾 Nuevo Pedido</a> |
-  <a href="productos.html">🍽️ Agregar Productos</a> |
-  <a href="tasa.html">💱 Tasa BCV</a> |
-  <a href="ventas.html">📊 Ventas</a> |
-  <a href="deudores.html">⚠️ Deudores</a> |
-  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-  <a href="combos.html">🧃 Combos</a>
-</nav>
+    <a href="index.php">🧾 Nuevo Pedido</a> |
+    <a href="productos.html">🍽️ Agregar Productos</a> |
+    <a href="tasa.html">💱 Tasa BCV</a> |
+    <a href="ventas.html">📊 Ventas</a> |
+    <a href="deudores.html">⚠️ Deudores</a> |
+    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+    <a href="combos.html">🧃 Combos</a>
+  </nav>
   <h2 style="color: #d9534f;">⚠️ Control de Deudores</h2>
 
   <h3>Filtrar pedidos pendientes de pago</h3>
@@ -105,23 +108,28 @@
   <label>Hasta: <input type="date" id="filtroHasta"></label>
   <button onclick="cargarVentas()">Buscar</button>
 
+  <div
+    style="background: #fff3cd; color: #856404; padding: 15px; border: 1px solid #ffeeba; border-radius: 5px; margin: 10px 0; font-size: 1.2em;">
+    <strong>💰 Total por Cobrar (Global): </strong> $<span id="totalDeudaGlobal">0.00</span>
+  </div>
+
   <div id="resumenCaja"></div>
 
   <!-- Contenedor de ventas con altura fija y scroll -->
   <div id="contenedorVentas">
     <table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th> 
-      <th>Mesa</th>
-      <th>Estado</th>
-      <th>Total ($)</th>
-      <th>Acción</th>
-    </tr>
-  </thead>
-  <tbody id="tablaVentas"></tbody>
-</table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>Mesa</th>
+          <th>Estado</th>
+          <th>Total ($)</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaVentas"></tbody>
+    </table>
 
   </div>
 
@@ -141,4 +149,5 @@
 
   <script src="js/app.js"></script>
 </body>
+
 </html>

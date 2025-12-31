@@ -481,6 +481,23 @@ async function cargarVentas() {
         } else console.warn('No se pudo cargar resumen de caja');
       } catch (err) { console.error('Error resumen caja:', err); }
     }
+
+    // Calcular Total Deuda Global si existe el elemento en el DOM (para deudores.html)
+    const elDeuda = document.getElementById('totalDeudaGlobal');
+    if (elDeuda) {
+      let totalDeuda = 0;
+      ventas.forEach(p => {
+        const tp = (typeof p.total_pedido_usd !== 'undefined') ? parseFloat(p.total_pedido_usd) : (parseFloat(p.total) || 0);
+        const tpag = (typeof p.total_pagado_usd !== 'undefined') ? parseFloat(p.total_pagado_usd) : (parseFloat(p.total_pagado) || 0);
+        const isPagado = (typeof p.is_pagado_calc !== 'undefined') ? p.is_pagado_calc : ((tpag + 0.01) >= tp);
+
+        if (!isPagado) {
+          totalDeuda += Math.max(0, tp - tpag);
+        }
+      });
+      elDeuda.textContent = totalDeuda.toFixed(2);
+    }
+
   } catch (err) {
     alert('No se pudo cargar las ventas.');
     console.error(err);
