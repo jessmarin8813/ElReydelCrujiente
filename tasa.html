@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Actualizar Tasa BCV</title>
   <link rel="stylesheet" href="css/estilos.css">
 </head>
+
 <body>
   <nav>
-  <a href="index.php">🧾 Nuevo Pedido</a> |
-  <a href="productos.html">🍽️ Agregar Productos</a> |
-  <a href="tasa.html">💱 Tasa BCV</a> |
-  <a href="ventas.html">📊 Ventas</a> |
-  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-  <a href="combos.html">🧃 Combos</a>
-</nav>
+    <a href="index.php">🧾 Nuevo Pedido</a> |
+    <a href="productos.html">🍽️ Agregar Productos</a> |
+    <a href="tasa.html">💱 Tasa BCV</a> |
+    <a href="ventas.html">📊 Ventas</a> |
+    <a href="deudores.html">⚠️ Deudores</a> |
+    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+    <a href="combos.html">🧃 Combos</a>
+  </nav>
   <h2>Actualizar tasa BCV</h2>
   <form id="form-tasa">
     <input type="number" id="tasa" placeholder="Tasa BCV actual" step="0.01" required>
@@ -34,17 +37,18 @@
       });
 
     // 🔹 Actualizar tasa al enviar
-    document.getElementById('form-tasa').onsubmit = function(e) {
+    document.getElementById('form-tasa').onsubmit = function (e) {
       e.preventDefault();
       const tasa = document.getElementById('tasa').value;
       fetch('api/actualizar_tasa.php', {
         method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({tasa})
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tasa })
       })
-      .then(res => res.text())
-      .then(msg => alert(msg));
+        .then(res => res.text())
+        .then(msg => alert(msg));
     };
   </script>
 </body>
+
 </html>

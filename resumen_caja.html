@@ -1,30 +1,65 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resumen de Caja</title>
   <link rel="stylesheet" href="css/estilos.css">
   <style>
-    body { font-family: sans-serif; padding: 20px; }
-    .pedido { border: 1px solid #ccc; margin-bottom: 20px; padding: 10px; background: #f9f9f9; }
-    .pedido h3 { margin-top: 0; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
-    .pagos { margin-top: 10px; }
-    #resumenGlobal { margin-bottom: 20px; background: #eef; padding: 10px; border: 1px solid #99c; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+
+    .pedido {
+      border: 1px solid #ccc;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: #f9f9f9;
+    }
+
+    .pedido h3 {
+      margin-top: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+    }
+
+    .pagos {
+      margin-top: 10px;
+    }
+
+    #resumenGlobal {
+      margin-bottom: 20px;
+      background: #eef;
+      padding: 10px;
+      border: 1px solid #99c;
+    }
   </style>
 </head>
+
 <body>
   <nav>
-  <a href="index.php">🧾 Nuevo Pedido</a> |
-  <a href="productos.html">🍽️ Agregar Productos</a> |
-  <a href="tasa.html">💱 Tasa BCV</a> |
-  <a href="ventas.html">📊 Ventas</a> |
-  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-  <a href="combos.html">🧃 Combos</a>
-</nav>
+    <a href="index.php">🧾 Nuevo Pedido</a> |
+    <a href="productos.html">🍽️ Agregar Productos</a> |
+    <a href="tasa.html">💱 Tasa BCV</a> |
+    <a href="ventas.html">📊 Ventas</a> |
+    <a href="deudores.html">⚠️ Deudores</a> |
+    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+    <a href="combos.html">🧃 Combos</a>
+  </nav>
   <h2>Resumen de Caja</h2>
   <label>Desde: <input type="date" id="desde"></label>
   <label>Hasta: <input type="date" id="hasta"></label>
@@ -103,13 +138,14 @@
         });
     }
     // 🔹 Ejecutar automáticamente al cargar con fecha actual
-document.addEventListener('DOMContentLoaded', () => {
-  const hoy = new Date().toISOString().split('T')[0];
-  document.getElementById('desde').value = hoy;
-  document.getElementById('hasta').value = hoy;
-  cargarResumen();
-});
+    document.addEventListener('DOMContentLoaded', () => {
+      const hoy = new Date().toISOString().split('T')[0];
+      document.getElementById('desde').value = hoy;
+      document.getElementById('hasta').value = hoy;
+      cargarResumen();
+    });
 
   </script>
 </body>
+
 </html>

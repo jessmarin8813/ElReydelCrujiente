@@ -12,6 +12,7 @@
   <a href="productos.html">🍽️ Agregar Productos</a> |
   <a href="tasa.html">💱 Tasa BCV</a> |
   <a href="ventas.html">📊 Ventas</a> |
+  <a href="deudores.html">⚠️ Deudores</a> |
   <a href="resumen_caja.html">💰 Resumen de Caja</a> |
   <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
   <a href="combos.html">🧃 Combos</a>

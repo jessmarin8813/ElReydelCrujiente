@@ -1,21 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agregar Producto</title>
   <link rel="stylesheet" href="css/estilos.css">
 </head>
+
 <body>
   <nav>
-  <a href="index.php">🧾 Nuevo Pedido</a> |
-  <a href="productos.html">🍽️ Agregar Productos</a> |
-  <a href="tasa.html">💱 Tasa BCV</a> |
-  <a href="ventas.html">📊 Ventas</a> |
-  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-  <a href="combos.html">🧃 Combos</a>
-</nav>
+    <a href="index.php">🧾 Nuevo Pedido</a> |
+    <a href="productos.html">🍽️ Agregar Productos</a> |
+    <a href="tasa.html">💱 Tasa BCV</a> |
+    <a href="ventas.html">📊 Ventas</a> |
+    <a href="deudores.html">⚠️ Deudores</a> |
+    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+    <a href="combos.html">🧃 Combos</a>
+  </nav>
   <h2>Agregar producto</h2>
   <form id="form-producto">
     <input type="text" id="nombre" placeholder="Nombre del producto" required>
@@ -36,29 +39,30 @@
       <tbody id="tablaProductos"></tbody>
     </table>
   </div>
-    <script src="js/app.js"></script>
- <script>
-  document.getElementById('form-producto').onsubmit = function(e) {
-    e.preventDefault();
-    const nombre = document.getElementById('nombre').value;
-    const precio = document.getElementById('precio').value;
-    fetch('api/agregar_producto.php', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({nombre, precio})
-    })
-    .then(res => res.text())
-    .then(msg => {
-      alert(msg);
-      cargarProductos(); // ✅ recarga la tabla después de guardar
-    });
-  };
+  <script src="js/app.js"></script>
+  <script>
+    document.getElementById('form-producto').onsubmit = function (e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombre').value;
+      const precio = document.getElementById('precio').value;
+      fetch('api/agregar_producto.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre, precio })
+      })
+        .then(res => res.text())
+        .then(msg => {
+          alert(msg);
+          cargarProductos(); // ✅ recarga la tabla después de guardar
+        });
+    };
 
-  // ✅ carga los productos al abrir la página
-  document.addEventListener('DOMContentLoaded', cargarProductos);
-</script>
-  
+    // ✅ carga los productos al abrir la página
+    document.addEventListener('DOMContentLoaded', cargarProductos);
+  </script>
+
 
 
 </body>
+
 </html>

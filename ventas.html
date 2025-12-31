@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,8 @@
       margin-top: 10px;
     }
 
-    th, td {
+    th,
+    td {
       border: 1px solid #ccc;
       padding: 6px;
       text-align: left;
@@ -78,16 +80,18 @@
     }
   </style>
 </head>
+
 <body>
   <nav>
-  <a href="index.php">🧾 Nuevo Pedido</a> |
-  <a href="productos.html">🍽️ Agregar Productos</a> |
-  <a href="tasa.html">💱 Tasa BCV</a> |
-  <a href="ventas.html">📊 Ventas</a> |
-  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-  <a href="combos.html">🧃 Combos</a>
-</nav>
+    <a href="index.php">🧾 Nuevo Pedido</a> |
+    <a href="productos.html">🍽️ Agregar Productos</a> |
+    <a href="tasa.html">💱 Tasa BCV</a> |
+    <a href="ventas.html">📊 Ventas</a> |
+    <a href="deudores.html">⚠️ Deudores</a> |
+    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+    <a href="combos.html">🧃 Combos</a>
+  </nav>
   <h2>Ventas</h2>
 
   <h3>Filtrar por estado y fecha</h3>
@@ -107,18 +111,18 @@
   <!-- Contenedor de ventas con altura fija y scroll -->
   <div id="contenedorVentas">
     <table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th> <!-- Nueva columna -->
-      <th>Mesa</th>
-      <th>Estado</th>
-      <th>Total ($)</th>
-      <th>Acción</th>
-    </tr>
-  </thead>
-  <tbody id="tablaVentas"></tbody>
-</table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th> <!-- Nueva columna -->
+          <th>Mesa</th>
+          <th>Estado</th>
+          <th>Total ($)</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody id="tablaVentas"></tbody>
+    </table>
 
   </div>
 
@@ -138,4 +142,5 @@
 
   <script src="js/app.js"></script>
 </body>
+
 </html>
