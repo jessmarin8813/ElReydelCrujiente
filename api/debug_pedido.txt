@@ -1,0 +1,40 @@
+Array
+(
+    [tipo] => para_llevar
+    [nombre] => 
+    [productos] => Array
+        (
+            [0] => Array
+                (
+                    [producto_id] => 1
+                    [cantidad] => 0.35
+                )
+
+            [1] => Array
+                (
+                    [producto_id] => 2
+                    [cantidad] => 2
+                )
+
+            [2] => Array
+                (
+                    [producto_id] => 6
+                    [cantidad] => 0.25
+                )
+
+            [3] => Array
+                (
+                    [producto_id] => 7
+                    [cantidad] => 0.15
+                )
+
+            [4] => Array
+                (
+                    [producto_id] => 8
+                    [cantidad] => 0.2
+                )
+
+        )
+
+    [mesa_id] => 
+)

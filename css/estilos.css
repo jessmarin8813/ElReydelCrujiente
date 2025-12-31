@@ -1,0 +1,483 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+  }
+  
+  h1, h2, h3 {
+    color: #333;
+  }
+  
+  select,
+  input[type="number"],
+  input[type="text"],
+  button {
+    margin: 5px 0;
+    padding: 8px;
+    font-size: 16px;
+    width: 15%;
+    max-width: 300px;
+    box-sizing: border-box;
+  }
+  td button {
+    padding: 8px 16px;
+    font-size: 16px;
+    width: 100%;
+    max-width: 120px;
+    box-sizing: border-box;
+  }
+  
+  
+  #mesas button {
+    margin: 5px;
+    padding: 10px;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #mesas button.green {
+    background-color: green;
+  }
+  
+  #mesas button.red {
+    background-color: red;
+  }
+  
+  #menu div {
+    margin-bottom: 8px;
+  }
+  
+  button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  nav {
+    margin-bottom: 10px;
+  }
+  
+  nav a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+    margin-right: 15px;
+  }
+  
+  nav a:hover {
+    text-decoration: underline;
+  }
+  #tablaProductos input,
+  #tablaProductos select {
+    width: 100%;
+    max-width: none;
+  }
+  input[type="date"] {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    width: 180px;
+    box-sizing: border-box;
+  }
+  @media (max-width: 600px) {
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select {
+      width: 100%;
+      font-size: 18px;
+      padding: 10px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+  }
+  @media (max-width: 600px) {
+    button {
+      width: 100%;
+      font-size: 18px;
+      padding: 12px;
+      margin-top: 10px;
+    }
+  }
+  @media (max-width: 600px) {
+    table {
+      display: block;
+      overflow-x: auto;
+      width: 100%;
+    }
+  }
+  @media (max-width: 600px) {
+    form,
+    .form-group,
+    .contenedor {
+      width: 100%;
+      padding: 10px;
+    }
+  }
+  @media (max-width: 600px) {
+    label,
+    h2,
+    h3 {
+      display: block;
+      margin-bottom: 8px;
+    }
+  }
+          .resaltado-pagado {
+  background-color: #d4edda; /* verde claro */
+}
+
+.resaltado-deudor {
+  background-color: #f8d7da; /* rojo claro */
+}
+td.total {
+  font-weight: bold;
+  color: #333;
+}
+/* NUEVO MÓDULO DE PEDIDOS CON BÚSQUEDA Y COMBOS */
+
+.panel {
+  flex: 1;
+  min-width: 300px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: #fff;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+#carrito ul {
+  list-style: none;
+  padding: 0;
+}
+
+#carrito li {
+  margin: 4px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.producto,
+.combo {
+  padding: 6px;
+  margin: 4px 0;
+  background: #f1f1f1;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  border-radius: 4px;
+  flex: 1 1 250px;
+  max-width: 300px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition: background-color 0.2s ease;
+}
+.combo ul {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.combo li {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+.combo button {
+  margin-top: 8px;
+  width: 100%;
+}
+
+
+.producto:hover,
+.combo:hover {
+  background: #e0f0ff;
+}
+
+#resultadosBusqueda,
+#listaCombos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+#inputBusqueda {
+  width: 100%;
+  max-width: none;
+  padding: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .panel {
+    width: 100%;
+  }
+  
+}
+@media (max-width: 600px) {
+  #listaCombos {
+    flex-direction: column;
+  }
+
+  .combo {
+    max-width: 100%;
+  }
+}
+#buscador input[type="text"] {
+  width: 100% !important;
+  max-width: 300px !important;
+  padding: 10px 14px;
+  font-size: 17px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+#buscador button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  font-size: 17px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 5px;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#buscador button:hover {
+  background-color: #0056b3;
+}
+@media (max-width: 600px) {
+  #buscador input[type="text"],
+  #buscador button {
+    width: 100%;
+    font-size: 18px;
+    padding: 10px;
+  }
+}
+.producto input[type="number"] {
+  width: 100%;
+  max-width: none;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-top: 6px;
+}
+@media (max-width: 600px) {
+  .producto input[type="number"] {
+    font-size: 18px;
+    padding: 12px;
+  }
+}
+.tarjeta-producto {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 12px;
+  background-color: #f9f9f9;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 300px;
+}
+
+.tarjeta-producto input[type="number"] {
+  width: 100%;
+  padding: 6px;
+  font-size: 16px;
+}
+
+.tarjeta-producto button {
+  padding: 8px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100% !important;
+  padding: 10px 14px !important;
+  font-size: 16px !important;
+}
+
+
+
+.tarjeta-producto button:hover {
+  background-color: #0056b3;
+}
+/* Módulo de cocina: tarjetas de pedidos */
+.pedido-card {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 16px;
+  margin: 10px;
+  width: 100%;
+  max-width: 320px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  color: #333;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+.pedido-card h2 {
+  font-size: 1.4em;
+  margin-bottom: 8px;
+  color: #007bff;
+}
+
+.pedido-card p {
+  margin: 4px 0;
+  font-size: 1em;
+}
+
+.productos {
+  font-size: 1.2em;
+  line-height: 1.5em;
+  margin-top: 10px;
+  color: #000;
+}
+
+.pedido-card button {
+  margin-top: 12px;
+  padding: 10px 14px;
+  font-size: 16px;
+  background-color: #28a745; /* verde éxito */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.pedido-card button:hover {
+  background-color: #218838;
+}
+
+/* Contenedor de pedidos */
+#pedidos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  padding: 10px;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 600px) {
+  .pedido-card {
+    width: 100%;
+    font-size: 1em;
+    padding: 12px;
+  }
+
+  .pedido-card h2 {
+    font-size: 1.2em;
+  }
+
+  .productos {
+    font-size: 1em;
+  }
+
+  .pedido-card button {
+    font-size: 1em;
+    padding: 10px;
+  }
+
+  #pedidos {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.estado-pendiente {
+  border-left: 6px solid #ffc107; /* amarillo */
+}
+
+.estado-preparando {
+  border-left: 6px solid #17a2b8; /* azul claro */
+}
+
+.estado-listo {
+  border-left: 6px solid #28a745; /* verde */
+  opacity: 0.6;
+}
+/* Corregir inputs del módulo Crear Combo (anulan la regla global width:15%) */
+#productosDisponibles,
+#editorComboProductos,
+#productosDisponibles table,
+#editorComboProductos .fila-producto {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Inputs y selects dentro del módulo combos: ocupar ancho completo */
+#productosDisponibles input[type="number"],
+#editorComboProductos input[type="number"],
+#editorComboProductos input[type="text"],
+#editorComboProductos select,
+#productosDisponibles input[type="text"] {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 10px 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  margin-top: 6px;
+}
+
+/* Botones del editor de combo: tamaño coherente y responsivo */
+#editorComboProductos button,
+#productosDisponibles button,
+#crearComboBtn,
+#guardarComboBtn {
+  width: auto;
+  min-width: 140px;
+  padding: 10px 14px;
+  font-size: 16px;
+  box-sizing: border-box;
+  margin-top: 8px;
+}
+
+/* Si utilizas una tabla dentro de productosDisponibles, que las celdas no colapsen el input */
+#productosDisponibles table td {
+  vertical-align: middle;
+  padding: 6px 8px;
+}
+
+/* Ajustes para móviles: inputs grandes y botones full-width */
+@media (max-width: 600px) {
+  #productosDisponibles input[type="number"],
+  #editorComboProductos input[type="number"],
+  #editorComboProductos input[type="text"],
+  #editorComboProductos select,
+  #productosDisponibles input[type="text"] {
+    width: 100% !important;
+    font-size: 18px;
+    padding: 12px;
+  }
+
+  #editorComboProductos button,
+  #productosDisponibles button {
+    width: 100% !important;
+  }
+}

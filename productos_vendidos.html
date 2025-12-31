@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos Vendidos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    .resaltado { background-color: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <nav>
+  <a href="index.php">🧾 Nuevo Pedido</a> |
+  <a href="productos.html">🍽️ Agregar Productos</a> |
+  <a href="tasa.html">💱 Tasa BCV</a> |
+  <a href="ventas.html">📊 Ventas</a> |
+  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+  <a href="combos.html">🧃 Combos</a>
+</nav>
+
+  <h2>📦 Productos Vendidos</h2>
+  <label>Desde: <input type="date" id="desde"></label>
+  <label>Hasta: <input type="date" id="hasta"></label>
+  <button onclick="cargarProductosVendidos()">Buscar</button>
+
+  <div id="contenedorProductosVendidos"></div>
+
+  <script>
+    function cargarProductosVendidos() {
+      const desde = document.getElementById('desde').value;
+      const hasta = document.getElementById('hasta').value;
+      if (!desde || !hasta) {
+        alert("Selecciona un rango de fechas.");
+        return;
+      }
+
+      fetch(`api/productos_vendidos.php?desde=${desde}&hasta=${hasta}`)
+        .then(res => res.json())
+        .then(data => {
+          const contenedor = document.getElementById('contenedorProductosVendidos');
+          contenedor.innerHTML = '';
+
+          let tabla = '<table><tr><th>Producto</th><th>Cantidad Vendida</th><th>Total ($)</th></tr>';
+          let totalGlobal = 0;
+
+          data.forEach(prod => {
+            const cantidad = parseFloat(prod.cantidad) || 0;
+            const total = parseFloat(prod.total) || 0;
+            totalGlobal += total;
+
+            tabla += `<tr>
+              <td>${prod.nombre}</td>
+              <td>${cantidad}</td>
+              <td>$${total.toFixed(2)}</td>
+            </tr>`;
+          });
+
+          tabla += `<tr><td colspan="2"><strong>Total General</strong></td><td><strong>$${totalGlobal.toFixed(2)}</strong></td></tr></table>`;
+          contenedor.innerHTML = tabla;
+        });
+    }
+    // 🔹 Ejecutar automáticamente al cargar con fecha actual
+document.addEventListener('DOMContentLoaded', () => {
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('desde').value = hoy;
+  document.getElementById('hasta').value = hoy;
+  cargarProductosVendidos();
+});
+
+  </script>
+</body>
+</html>

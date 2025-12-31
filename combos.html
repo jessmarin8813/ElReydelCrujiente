@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Gestión de Combos</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+  <nav>
+  <a href="index.php">🧾 Nuevo Pedido</a> |
+  <a href="productos.html">🍽️ Agregar Productos</a> |
+  <a href="tasa.html">💱 Tasa BCV</a> |
+  <a href="ventas.html">📊 Ventas</a> |
+  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+  <a href="combos.html">🧃 Combos</a>
+</nav>
+  <hr>
+
+  <h1>Gestión de Combos</h1>
+
+  <h3>Crear nuevo combo</h3>
+  <label>Nombre: <input type="text" id="nombreCombo"></label>
+  <p><strong>Precio estimado:</strong> $<span id="precioCombo">0.00</span></p>
+  <h4>Seleccionar productos:</h4>
+  <div id="productosDisponibles"></div>
+  <button onclick="crearCombo()">Crear combo</button>
+
+  <hr>
+  <h3>Combos existentes</h3>
+  <div id="listaCombos"></div>
+<div id="editorComboModal" style="display:none;" class="panel">
+  <h3>✏️ Editar Combo</h3>
+  <input type="hidden" id="editorComboId">
+  <label>Nombre: <input type="text" id="editorComboNombre"></label>
+  <div id="editorComboProductos"></div>
+  <p><strong>Precio estimado:</strong> $<span id="editorComboPrecio">0.00</span></p>
+  <button onclick="guardarEdicionCombo()">Guardar cambios</button>
+  <button onclick="document.getElementById('editorComboModal').style.display='none'">Cancelar</button>
+</div>
+
+
+  <script src="js/app.js"></script>
+</body>
+</html>

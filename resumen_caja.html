@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resumen de Caja</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .pedido { border: 1px solid #ccc; margin-bottom: 20px; padding: 10px; background: #f9f9f9; }
+    .pedido h3 { margin-top: 0; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
+    .pagos { margin-top: 10px; }
+    #resumenGlobal { margin-bottom: 20px; background: #eef; padding: 10px; border: 1px solid #99c; }
+  </style>
+</head>
+<body>
+  <nav>
+  <a href="index.php">🧾 Nuevo Pedido</a> |
+  <a href="productos.html">🍽️ Agregar Productos</a> |
+  <a href="tasa.html">💱 Tasa BCV</a> |
+  <a href="ventas.html">📊 Ventas</a> |
+  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+  <a href="combos.html">🧃 Combos</a>
+</nav>
+  <h2>Resumen de Caja</h2>
+  <label>Desde: <input type="date" id="desde"></label>
+  <label>Hasta: <input type="date" id="hasta"></label>
+  <button onclick="cargarResumen()">Buscar</button>
+
+  <div id="resumenGlobal"></div>
+  <div id="contenedorResumen"></div>
+
+  <script>
+    function cargarResumen() {
+      const desde = document.getElementById('desde').value;
+      const hasta = document.getElementById('hasta').value;
+      if (!desde || !hasta) {
+        alert("Selecciona un rango de fechas.");
+        return;
+      }
+
+      fetch(`api/resumen_caja.php?desde=${desde}&hasta=${hasta}`)
+        .then(res => {
+          if (!res.ok) throw new Error("Error al cargar datos");
+          return res.json();
+        })
+        .then(data => {
+          const contenedor = document.getElementById('contenedorResumen');
+          const resumenDiv = document.getElementById('resumenGlobal');
+          contenedor.innerHTML = '';
+          resumenDiv.innerHTML = '';
+
+          const resumen = data.resumen;
+          let resumenHTML = `<h3>Total ventas pagadas: $${parseFloat(resumen.total_ventas).toFixed(2)}</h3><ul>`;
+          for (const metodo in resumen.metodos) {
+            resumenHTML += `<li>${metodo}: $${parseFloat(resumen.metodos[metodo]).toFixed(2)}</li>`;
+          }
+          resumenHTML += '</ul>';
+          resumenDiv.innerHTML = resumenHTML;
+
+          data.pedidos.forEach(pedido => {
+            const div = document.createElement('div');
+            div.className = 'pedido';
+            div.innerHTML = `<h3>Pedido #${pedido.id} - ${pedido.fecha}</h3>`;
+
+            let tabla = '<table><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>';
+            let total = 0;
+
+            pedido.productos.forEach(prod => {
+              const precio = parseFloat(prod.precio) || 0;
+              const cantidad = parseFloat(prod.cantidad) || 0;
+              const subtotal = precio * cantidad;
+              total += subtotal;
+
+              tabla += `<tr>
+                <td>${prod.nombre}</td>
+                <td>${cantidad}</td>
+                <td>$${precio.toFixed(2)}</td>
+                <td>$${subtotal.toFixed(2)}</td>
+              </tr>`;
+            });
+
+            tabla += `<tr><td colspan="3"><strong>Total</strong></td><td><strong>$${total.toFixed(2)}</strong></td></tr></table>`;
+            div.innerHTML += tabla;
+
+            let pagos = '<div class="pagos"><strong>Pagos:</strong><ul>';
+            pedido.pagos.forEach(p => {
+              const monto = parseFloat(p.monto) || 0;
+              pagos += `<li>${p.metodo}: $${monto.toFixed(2)}</li>`;
+            });
+            pagos += '</ul></div>';
+            div.innerHTML += pagos;
+
+            contenedor.appendChild(div);
+          });
+        })
+        .catch(err => {
+          alert("No se pudo cargar el resumen. Verifica el backend.");
+          console.error(err);
+        });
+    }
+    // 🔹 Ejecutar automáticamente al cargar con fecha actual
+document.addEventListener('DOMContentLoaded', () => {
+  const hoy = new Date().toISOString().split('T')[0];
+  document.getElementById('desde').value = hoy;
+  document.getElementById('hasta').value = hoy;
+  cargarResumen();
+});
+
+  </script>
+</body>
+</html>
