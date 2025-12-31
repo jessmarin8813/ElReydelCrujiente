@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deudores - El Rey del Crujiente</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      padding: 20px;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: left;
+    }
+
+    .resaltado {
+      background-color: #f9f9f9;
+    }
+
+    #contenedorVentas {
+      height: 40vh;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 5px;
+      margin-top: 10px;
+      background: #fff;
+    }
+
+    #detalleVenta {
+      margin-top: 20px;
+      border-top: 2px solid #ccc;
+      padding: 15px;
+      background: #f1f1f1;
+    }
+
+    nav {
+      margin-bottom: 15px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+      margin-right: 15px;
+    }
+
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    input[type="number"] {
+      width: 100px;
+      padding: 4px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+    
+    /* Highlight Debtors specifically here if needed, though app.js handles it */
+  </style>
+</head>
+<body onload="cargarVentas()">
+  <nav>
+  <a href="index.php">🧾 Nuevo Pedido</a> |
+  <a href="productos.html">🍽️ Agregar Productos</a> |
+  <a href="tasa.html">💱 Tasa BCV</a> |
+  <a href="ventas.html">📊 Ventas</a> |
+  <a href="deudores.html">⚠️ Deudores</a> |
+  <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+  <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+  <a href="combos.html">🧃 Combos</a>
+</nav>
+  <h2 style="color: #d9534f;">⚠️ Control de Deudores</h2>
+
+  <h3>Filtrar pedidos pendientes de pago</h3>
+  <label>Estado:
+    <select id="filtroEstado" onchange="cargarVentas()">
+      <option value="deudor" selected>Deudor</option>
+      <option value="">Todos</option>
+      <option value="pagado">Pagado</option>
+    </select>
+  </label>
+  <label>Desde: <input type="date" id="filtroDesde"></label>
+  <label>Hasta: <input type="date" id="filtroHasta"></label>
+  <button onclick="cargarVentas()">Buscar</button>
+
+  <div id="resumenCaja"></div>
+
+  <!-- Contenedor de ventas con altura fija y scroll -->
+  <div id="contenedorVentas">
+    <table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th> 
+      <th>Mesa</th>
+      <th>Estado</th>
+      <th>Total ($)</th>
+      <th>Acción</th>
+    </tr>
+  </thead>
+  <tbody id="tablaVentas"></tbody>
+</table>
+
+  </div>
+
+  <!-- Detalle del pedido fuera del contenedor -->
+  <div id="detalleVenta">
+    <h3>Detalle del pedido</h3>
+    <p id="estadoPago" style="color: red; font-weight: bold;"></p>
+    <div id="detalleProductos"></div>
+    <div id="menuAdicional"></div>
+    <h4>Registrar pago</h4>
+    <label>Efectivo: <input type="number" id="efectivo" step="0.01" value="0"></label>
+    <label>Tarjeta: <input type="number" id="tarjeta" step="0.01" value="0"></label>
+    <label>Divisas: <input type="number" id="divisas" step="0.01" value="0"></label>
+    <label>Pago Móvil: <input type="number" id="pagomovil" step="0.01" value="0"></label>
+    <button id="botonPago" onclick="registrarPago()">Registrar pago</button>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
