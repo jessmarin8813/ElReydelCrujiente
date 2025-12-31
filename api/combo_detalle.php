@@ -1,6 +1,6 @@
 <?php
 require 'conexion.php';
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 
 $id = intval($_GET['id'] ?? 0);
 if ($id <= 0) {
@@ -10,19 +10,29 @@ if ($id <= 0) {
 }
 
 // 🔹 Obtener tasa actual
-$tasa = 0;
+$tasa = 1.0;
 $resTasa = $conn->query("SELECT tasa FROM tipo_cambio ORDER BY id DESC LIMIT 1");
-if ($rowTasa = $resTasa->fetch_assoc()) {
+if ($resTasa && $rowTasa = $resTasa->fetch_assoc()) {
   $tasa = floatval($rowTasa['tasa']);
 }
 
 // 🔹 Buscar combo
-$res = $conn->query("SELECT id, nombre, precio FROM combos WHERE id = $id");
+$stmt = $conn->prepare("SELECT id, nombre, precio FROM combos WHERE id = ?");
+if (!$stmt) {
+    http_response_code(500);
+    echo json_encode(["error" => "Error preparando consulta: " . $conn->error]);
+    exit;
+}
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$res = $stmt->get_result();
+
 if (!$row = $res->fetch_assoc()) {
   http_response_code(404);
   echo json_encode(["error" => "Combo no encontrado"]);
   exit;
 }
+$stmt->close();
 
 $combo = [
   'id' => intval($row['id']),
@@ -33,12 +43,21 @@ $combo = [
 ];
 
 // 🔹 Obtener productos del combo
-$resProd = $conn->query("
+$stmtProd = $conn->prepare("
   SELECT cp.producto_id, p.nombre, cp.cantidad
   FROM combo_productos cp
   JOIN productos p ON p.id = cp.producto_id
-  WHERE cp.combo_id = $id
+  WHERE cp.combo_id = ?
 ");
+if (!$stmtProd) {
+    http_response_code(500);
+    echo json_encode(["error" => "Error preparando consulta productos: " . $conn->error]);
+    exit;
+}
+
+$stmtProd->bind_param("i", $id);
+$stmtProd->execute();
+$resProd = $stmtProd->get_result();
 
 while ($p = $resProd->fetch_assoc()) {
   $combo['productos'][] = [
@@ -47,5 +66,7 @@ while ($p = $resProd->fetch_assoc()) {
     'cantidad' => floatval($p['cantidad'])
   ];
 }
+$stmtProd->close();
 
 echo json_encode($combo);
+?>

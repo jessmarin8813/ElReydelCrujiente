@@ -12,42 +12,33 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Obtener y validar datos de entrada
 $data = json_decode(file_get_contents("php://input"), true);
 $id = intval($data['id'] ?? 0);
-$estado = $data['estado'] ?? '';
 
-// Validar ID
 if ($id <= 0) {
   http_response_code(400);
-  echo json_encode(["error" => "ID de mesa inválido"]);
-  exit;
-}
-
-// Validar estado
-if (!in_array($estado, ['libre', 'ocupada'], true)) {
-  http_response_code(400);
-  echo json_encode(["error" => "Estado inválido. Use 'libre' u 'ocupada'"]);
+  echo json_encode(["error" => "ID inválido"]);
   exit;
 }
 
 // Usar prepared statement para evitar SQL injection
-$stmt = $conn->prepare("UPDATE mesas SET estado = ? WHERE id = ?");
+$stmt = $conn->prepare("DELETE FROM combos WHERE id = ?");
 if (!$stmt) {
   http_response_code(500);
   echo json_encode(["error" => "Error al preparar consulta: " . $conn->error]);
   exit;
 }
 
-$stmt->bind_param('si', $estado, $id);
+$stmt->bind_param('i', $id);
 
 if ($stmt->execute()) {
   if ($stmt->affected_rows > 0) {
-    echo json_encode(["mensaje" => "Estado de mesa actualizado correctamente", "id" => $id, "estado" => $estado]);
+    echo json_encode(["mensaje" => "Combo eliminado correctamente"]);
   } else {
     http_response_code(404);
-    echo json_encode(["error" => "Mesa no encontrada o estado sin cambios"]);
+    echo json_encode(["error" => "Combo no encontrado"]);
   }
 } else {
   http_response_code(500);
-  echo json_encode(["error" => "Error al actualizar estado: " . $stmt->error]);
+  echo json_encode(["error" => "Error al eliminar combo: " . $stmt->error]);
 }
 
 $stmt->close();

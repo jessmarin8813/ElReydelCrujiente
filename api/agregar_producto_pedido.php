@@ -1,21 +1,64 @@
 <?php
-include 'conexion.php';
+require 'conexion.php';
+header('Content-Type: application/json; charset=utf-8');
 
-$data = json_decode(file_get_contents("php://input"), true);
-$pedido_id = intval($data['pedido_id']);
-$producto_id = intval($data['producto_id']);
-$cantidad = number_format((float)$data['cantidad'], 3, '.', '');
-
-// Verificar si ya existe ese producto en el pedido
-$res = $conn->query("SELECT cantidad FROM pedido_detalles WHERE pedido_id = $pedido_id AND producto_id = $producto_id");
-
-if ($res->num_rows > 0) {
-  $actual = $res->fetch_assoc()['cantidad'];
-  $nuevaCantidad = number_format((float)$actual + (float)$cantidad, 3, '.', '');
-  $conn->query("UPDATE pedido_detalles SET cantidad = '$nuevaCantidad' WHERE pedido_id = $pedido_id AND producto_id = $producto_id");
-} else {
-  $conn->query("INSERT INTO pedido_detalles (pedido_id, producto_id, cantidad) VALUES ($pedido_id, $producto_id, '$cantidad')");
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['error' => 'Método no permitido. Use POST.']);
+    exit;
 }
 
-echo json_encode(["mensaje" => "Producto agregado correctamente"]);
+$data = json_decode(file_get_contents("php://input"), true);
+$pedido_id = intval($data['pedido_id'] ?? 0);
+$producto_id = intval($data['producto_id'] ?? 0);
+$cantidad = floatval($data['cantidad'] ?? 0);
+
+if ($pedido_id <= 0 || $producto_id <= 0 || $cantidad <= 0) {
+    http_response_code(400);
+    echo json_encode(["error" => "Datos inválidos: pedido_id, producto_id y cantidad requeridos."]);
+    exit;
+}
+
+$conn->begin_transaction();
+
+try {
+    // Verificar si ya existe ese producto en el pedido
+    $stmtCheck = $conn->prepare("SELECT cantidad FROM pedido_detalles WHERE pedido_id = ? AND producto_id = ?");
+    if (!$stmtCheck) throw new Exception("Error preparando check: " . $conn->error);
+    
+    $stmtCheck->bind_param("ii", $pedido_id, $producto_id);
+    $stmtCheck->execute();
+    $res = $stmtCheck->get_result();
+    
+    if ($row = $res->fetch_assoc()) {
+        $stmtCheck->close();
+        // Actualizar
+        $actual = floatval($row['cantidad']);
+        $nuevaCantidad = $actual + $cantidad;
+        
+        $stmtUpd = $conn->prepare("UPDATE pedido_detalles SET cantidad = ? WHERE pedido_id = ? AND producto_id = ?");
+        if (!$stmtUpd) throw new Exception("Error preparando update: " . $conn->error);
+        
+        $stmtUpd->bind_param("dii", $nuevaCantidad, $pedido_id, $producto_id);
+        $stmtUpd->execute();
+        $stmtUpd->close();
+    } else {
+        $stmtCheck->close();
+        // Insertar
+        $stmtIns = $conn->prepare("INSERT INTO pedido_detalles (pedido_id, producto_id, cantidad) VALUES (?, ?, ?)");
+        if (!$stmtIns) throw new Exception("Error preparando insert: " . $conn->error);
+        
+        $stmtIns->bind_param("iid", $pedido_id, $producto_id, $cantidad);
+        $stmtIns->execute();
+        $stmtIns->close();
+    }
+
+    $conn->commit();
+    echo json_encode(["mensaje" => "Producto agregado correctamente"]);
+
+} catch (Exception $e) {
+    $conn->rollback();
+    http_response_code(500);
+    echo json_encode(["error" => "Error al agregar producto al pedido: " . $e->getMessage()]);
+}
 ?>
