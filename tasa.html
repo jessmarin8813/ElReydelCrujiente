@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 
 <head>
@@ -9,7 +9,7 @@
 </head>
 
 <body>
-  <nav>
+    <nav>
     <a href="index.php">🧾 Nuevo Pedido</a> |
     <a href="productos.html">🍽️ Agregar Productos</a> |
     <a href="tasa.html">💱 Tasa BCV</a> |
@@ -17,7 +17,8 @@
     <a href="deudores.html">⚠️ Deudores</a> |
     <a href="resumen_caja.html">💰 Resumen de Caja</a> |
     <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-    <a href="combos.html">🧃 Combos</a>
+    <a href="combos.html">🧃 Combos</a> |
+    <a href="perfil.html">🔒 Mi Perfil</a>
   </nav>
   <h2>Actualizar tasa BCV</h2>
   <form id="form-tasa">
@@ -26,7 +27,7 @@
   </form>
 
   <script>
-    // 🔹 Mostrar tasa actual al cargar
+    // ðŸ”¹ Mostrar tasa actual al cargar
     fetch('api/tasa.php')
       .then(res => res.json())
       .then(data => {
@@ -36,7 +37,7 @@
         }
       });
 
-    // 🔹 Actualizar tasa al enviar
+    // ðŸ”¹ Actualizar tasa al enviar
     document.getElementById('form-tasa').onsubmit = function (e) {
       e.preventDefault();
       const tasa = document.getElementById('tasa').value;

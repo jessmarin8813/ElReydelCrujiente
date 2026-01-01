@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - El Rey del Crujiente</title>
+    <link rel="stylesheet" href="css/estilos.css">
+    <style>
+        .profile-container {
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-container input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .profile-container label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .btn-save {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .btn-save:hover {
+            background: #218838;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Nav will be injected/updated later -->
+      <nav>
+    <a href="index.php">🧾 Nuevo Pedido</a> |
+    <a href="productos.html">🍽️ Agregar Productos</a> |
+    <a href="tasa.html">💱 Tasa BCV</a> |
+    <a href="ventas.html">📊 Ventas</a> |
+    <a href="deudores.html">⚠️ Deudores</a> |
+    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+    <a href="combos.html">🧃 Combos</a> |
+    <a href="perfil.html">🔒 Mi Perfil</a>
+  </nav>
+
+    <div class="profile-container">
+        <h2>ðŸ”’ Cambiar ContraseÃ±a</h2>
+        <p style="color:#666; margin-bottom:20px;">Por seguridad, ingresa tu contraseÃ±a actual para establecer una
+            nueva.</p>
+
+        <form id="formPerfil">
+            <label>ContraseÃ±a Actual</label>
+            <input type="password" id="claveActual" required>
+
+            <label>Nueva ContraseÃ±a</label>
+            <input type="password" id="claveNueva" required>
+
+            <label>Confirmar Nueva ContraseÃ±a</label>
+            <input type="password" id="claveConfirmar" required>
+
+            <button type="submit" class="btn-save">Actualizar ContraseÃ±a</button>
+        </form>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('formPerfil').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const actual = document.getElementById('claveActual').value;
+            const nueva = document.getElementById('claveNueva').value;
+            const confirmar = document.getElementById('claveConfirmar').value;
+
+            if (nueva !== confirmar) {
+                alert('âŒ Las nuevas contraseÃ±as no coinciden.');
+                return;
+            }
+
+            if (nueva.length < 4) {
+                alert('âŒ La contraseÃ±a es muy corta (mÃ­nimo 4 caracteres).');
+                return;
+            }
+
+            try {
+                const res = await fetch('api/auth.php?action=change_password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ actual, nueva })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.success) {
+                    alert('âœ… ' + data.mensaje);
+                    document.getElementById('formPerfil').reset();
+                } else {
+                    alert('âŒ ' + (data.error || 'Error al actualizar'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('âŒ Error de conexiÃ³n');
+            }
+        });
+    </script>
+</body>
+
+</html>
