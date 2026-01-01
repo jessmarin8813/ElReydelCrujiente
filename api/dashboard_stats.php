@@ -12,7 +12,7 @@ $response = [
 ];
 
 // 1. Ventas últimos 7 días
-$sql = "SELECT DATE(fecha) as fecha, SUM(total_pedido_usd) as total 
+$sql = "SELECT DATE(fecha) as fecha, SUM(total_usd) as total 
         FROM pedidos 
         WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) 
         AND estado = 'pagado'
@@ -36,7 +36,7 @@ while($row = $res->fetch_assoc()) {
 }
 
 // 3. Métodos de Pago (Histórico)
-$sql = "SELECT metodo, SUM(monto) as total 
+$sql = "SELECT metodo, SUM(monto_usd) as total 
         FROM pagos 
         GROUP BY metodo";
 $res = $conn->query($sql);
@@ -46,12 +46,12 @@ while($row = $res->fetch_assoc()) {
 
 // 4. Totales Rápidos (Hoy y Este Mes)
 // Hoy
-$sql = "SELECT SUM(total_pedido_usd) as total FROM pedidos WHERE DATE(fecha) = CURDATE() AND estado = 'pagado'";
+$sql = "SELECT SUM(total_usd) as total FROM pedidos WHERE DATE(fecha) = CURDATE() AND estado = 'pagado'";
 $row = $conn->query($sql)->fetch_assoc();
 $response['resumen_hoy'] = floatval($row['total'] ?? 0);
 
 // Mes
-$sql = "SELECT SUM(total_pedido_usd) as total FROM pedidos WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE()) AND estado = 'pagado'";
+$sql = "SELECT SUM(total_usd) as total FROM pedidos WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE()) AND estado = 'pagado'";
 $row = $conn->query($sql)->fetch_assoc();
 $response['resumen_mes'] = floatval($row['total'] ?? 0);
 

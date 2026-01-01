@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-      <nav>
+        <nav>
     <a href="index.php">🧾 Nuevo Pedido</a> |
     <a href="productos.html">🍽️ Agregar Productos</a> |
     <a href="tasa.html">💱 Tasa BCV</a> |
@@ -17,10 +17,9 @@
     <a href="resumen_caja.html">💰 Resumen de Caja</a> |
     <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
     <a href="combos.html">🧃 Combos</a> |
-    <a href="perfil.html">�� Mi Perfil</a>
+    <a href="perfil.html">🔒 Mi Perfil</a>
   </nav>
-
-  <div class="panel" id="carrito">
+<div class="panel" id="carrito">
     <h3>🛒 Pedido</h3>
     <ul id="listaCarrito"></ul>
     <div id="totalCarrito">
@@ -71,4 +70,5 @@ echo "Accede a este sistema desde otros dispositivos usando: http://$ip/elreydel
 
 </body>
 </html>
+
 
