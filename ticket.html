@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket de Venta</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            /* Monospaced for receipt look */
+            width: 300px;
+            /* Typical width for 80mm printers approx */
+            margin: 0 auto;
+            font-size: 12px;
+            color: black;
+            background: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .header p {
+            margin: 2px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+
+        th,
+        td {
+            text-align: left;
+            padding: 2px 0;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .line {
+            border-top: 1px dashed black;
+            margin: 5px 0;
+        }
+
+        .total {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 10px;
+        }
+
+        @media print {
+            body {
+                width: 100%;
+                margin: 0;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="no-print" style="margin-bottom:10px; text-align:center;">
+        <button onclick="window.print()">🖨️ Imprimir</button>
+        <button onclick="window.close()">❌ Cerrar</button>
+    </div>
+
+    <div id="ticketContent">Cargando ticket...</div>
+
+    <script src="js/app.js"></script>
+    <!-- Reutilizar app.js para formateos si es necesario, pero mejor fetch puro aqui -->
+    <script>
+        async function cargarTicket() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) {
+                document.getElementById('ticketContent').innerText = 'ID de pedido no especificado.';
+                return;
+            }
+
+            try {
+                // 1. Obtener detalles del pedido
+                const resDetalle = await fetch(`api/detalle_pedido.php?id=${id}`);
+                const productos = await resDetalle.json();
+
+                // 2. Obtener info del pedido (cabecera)
+                // Usamos listar_pedidos filtrado o verificamos si hay un endpoint de info simple. 
+                // Como no tenemos un endpoint de "info de un pedido" simple que devuelva fecha/cliente,
+                // improvisaremos usando los datos disponibles o agregaremos un endpoint.
+                // Por ahora, usaremos listar_pedidos filtrado.
+                const resInfo = await fetch('api/listar_pedidos.php'); // Esto trae todo, no es eficiente.
+                // Mejor hacer un fetch específico si es posible. 
+                // Si no, agregamos un endpoint rápido.
+                // Un hack rápido: Listar pedidos devuelve JSON array.
+                const ventas = await resInfo.json();
+                const pedido = ventas.find(p => p.id == id) || { nombre: 'Cliente', fecha: new Date().toLocaleDateString() };
+
+                let html = `
+          <div class="header">
+            <h2>El Rey del Crujiente</h2>
+            <p>Rif: V-12345678-9</p>
+            <p>Dirección del Local</p>
+            <p>Tel: 0412-1234567</p>
+            <div class="line"></div>
+            <p>Pedido #${pedido.id}</p>
+            <p>${pedido.nombre}</p>
+            <p>Fecha: ${new Date().toLocaleString()}</p> <!-- Idealmente la fecha del pedido -->
+          </div>
+          <div class="line"></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Cant.</th>
+                <th>Desc.</th>
+                <th class="right">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+
+                let total = 0;
+                productos.forEach(p => {
+                    const subtotal = p.cantidad * p.precio;
+                    total += subtotal;
+                    html += `
+              <tr>
+                <td>${parseFloat(p.cantidad)}</td>
+                <td>${p.nombre}</td>
+                <td class="right">$${subtotal.toFixed(2)}</td>
+              </tr>
+            `;
+                });
+
+                html += `
+            </tbody>
+          </table>
+          <div class="line"></div>
+          <div class="right total">Total: $${total.toFixed(2)}</div>
+          <div class="footer">
+            <p>¡Gracias por su compra!</p>
+            <p>Por favor conserve este ticket.</p>
+          </div>
+        `;
+
+                document.getElementById('ticketContent').innerHTML = html;
+
+                // Auto-imprimir si se desea
+                // window.print();
+
+            } catch (err) {
+                document.getElementById('ticketContent').innerText = 'Error al cargar ticket: ' + err.message;
+            }
+        }
+
+        cargarTicket();
+    </script>
+</body>
+
+</html>

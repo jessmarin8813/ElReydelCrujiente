@@ -6,6 +6,15 @@
 /* =========================
    0. Autenticación Global
    ========================= */
+function imprimirTicket(id) {
+  const width = 350;
+  const height = 600;
+  const left = (screen.width - width) / 2;
+  const top = (screen.height - height) / 2;
+  window.open(`ticket.html?id=${id}`, 'Ticket', `width=${width},height=${height},top=${top},left=${left}`);
+}
+window.imprimirTicket = imprimirTicket;
+
 (async function checkSession() {
   if (window.location.pathname.includes('login.html')) return;
   try {
@@ -478,6 +487,21 @@ async function cargarVentas() {
       fila.appendChild(tdTotal);
 
       const tdAccion = document.createElement('td');
+
+      // Botón Imprimir
+      const btnPrint = document.createElement('button');
+      btnPrint.type = 'button';
+      btnPrint.textContent = '🖨️';
+      btnPrint.title = 'Imprimir Ticket';
+      btnPrint.style.marginRight = '5px';
+      btnPrint.style.backgroundColor = '#6c757d'; // Gris
+      btnPrint.onclick = (e) => {
+        e.stopPropagation();
+        imprimirTicket(p.id);
+      };
+      tdAccion.appendChild(btnPrint);
+
+      // Botón Abrir
       const btn = document.createElement('button');
       btn.type = 'button';
       btn.textContent = isPagadoCalc ? 'Abrir (Pagado)' : 'Abrir';
@@ -486,6 +510,7 @@ async function cargarVentas() {
         catch (e) { console.error('Error al ejecutar verDetalle:', e); }
       });
       tdAccion.appendChild(btn);
+
       fila.appendChild(tdAccion);
 
       fila.dataset.totalPedido = totalPedido.toFixed(2);
@@ -581,7 +606,10 @@ function verDetalle(id) {
       html += `</table>
         <p><strong>Total en $:</strong> $${totalDolares.toFixed(2)}</p>
         <p><strong>Total en Bs:</strong> Bs ${totalBs.toFixed(2)}</p>
-        <button onclick="guardarCambios()">Guardar cambios</button>`;
+        <div style="margin-top: 10px;">
+            <button onclick="guardarCambios()">Guardar cambios</button>
+            <button onclick="imprimirTicket(${id})" style="background-color: #6c757d; margin-left: 10px;">🖨️ Imprimir Ticket</button>
+        </div>`;
       div.innerHTML = html;
     })
     .catch(err => console.error('Error detalle pedido:', err));
