@@ -1,11 +1,41 @@
 /**
  * app.js - Versión integrada y corregida
- * - Unifica nombres de campo (prefiere *_usd) con fallback legacy.
- * - Normaliza respuestas de verificar_pago.
- * - Verificar_pago llama con id y pedido_id para compatibilidad.
- * - Registrar pago actualiza fila usando campos preferentes.
- * - Soft-reset tras crear pedido y lock anti-dobles en envío.
+ * - Incluye verificación de sesión y logout.
  */
+
+/* =========================
+   0. Autenticación Global
+   ========================= */
+(async function checkSession() {
+  if (window.location.pathname.includes('login.html')) return;
+  try {
+    const res = await fetch('api/auth.php?action=check');
+    const data = await res.json();
+    if (!data.logged_in) {
+      window.location.href = 'login.html';
+    } else {
+      // Agregar botón de logout si existe nav
+      addLogoutButton(data.usuario);
+    }
+  } catch (e) {
+    console.error('Auth check failed', e);
+  }
+})();
+
+function addLogoutButton(usuario) {
+  const nav = document.querySelector('nav');
+  if (nav && !document.getElementById('btnLogout')) {
+    const span = document.createElement('span');
+    span.innerHTML = ` | 👤 ${escapeHtml(usuario)} <a href="#" id="btnLogout" style="color:red;" onclick="logout()">[Salir]</a>`;
+    nav.appendChild(span);
+  }
+}
+
+async function logout() {
+  await fetch('api/auth.php?action=logout');
+  window.location.href = 'login.html';
+}
+window.logout = logout;
 
 /* =========================
    I. Utilidades globales
