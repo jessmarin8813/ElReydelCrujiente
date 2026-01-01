@@ -96,21 +96,13 @@
             }
 
             try {
-                // 1. Obtener detalles del pedido
-                const resDetalle = await fetch(`api/detalle_pedido.php?id=${id}`);
-                const productos = await resDetalle.json();
+                // 1. Obtener todos los datos del ticket en una sola llamada
+                const res = await fetch(`api/get_ticket.php?id=${id}`);
+                if (!res.ok) throw new Error("Error al obtener datos del ticket");
+                const data = await res.json();
 
-                // 2. Obtener info del pedido (cabecera)
-                // Usamos listar_pedidos filtrado o verificamos si hay un endpoint de info simple. 
-                // Como no tenemos un endpoint de "info de un pedido" simple que devuelva fecha/cliente,
-                // improvisaremos usando los datos disponibles o agregaremos un endpoint.
-                // Por ahora, usaremos listar_pedidos filtrado.
-                const resInfo = await fetch('api/listar_pedidos.php'); // Esto trae todo, no es eficiente.
-                // Mejor hacer un fetch específico si es posible. 
-                // Si no, agregamos un endpoint rápido.
-                // Un hack rápido: Listar pedidos devuelve JSON array.
-                const ventas = await resInfo.json();
-                const pedido = ventas.find(p => p.id == id) || { nombre: 'Cliente', fecha: new Date().toLocaleDateString() };
+                // Formatear fecha
+                const fecha = new Date(data.fecha).toLocaleString();
 
                 let html = `
           <div class="header">
@@ -119,9 +111,9 @@
             <p>Dirección del Local</p>
             <p>Tel: 0412-1234567</p>
             <div class="line"></div>
-            <p>Pedido #${pedido.id}</p>
-            <p>${pedido.nombre}</p>
-            <p>Fecha: ${new Date().toLocaleString()}</p> <!-- Idealmente la fecha del pedido -->
+            <p>Pedido #${data.id}</p>
+            <p>${data.nombre || 'Cliente General'}</p>
+            <p>Fecha: ${fecha}</p>
           </div>
           <div class="line"></div>
           <table>
@@ -135,15 +127,12 @@
             <tbody>
         `;
 
-                let total = 0;
-                productos.forEach(p => {
-                    const subtotal = p.cantidad * p.precio;
-                    total += subtotal;
+                data.items.forEach(p => {
                     html += `
               <tr>
-                <td>${parseFloat(p.cantidad)}</td>
+                <td>${p.cantidad}</td>
                 <td>${p.nombre}</td>
-                <td class="right">$${subtotal.toFixed(2)}</td>
+                <td class="right">$${p.subtotal.toFixed(2)}</td>
               </tr>
             `;
                 });
@@ -152,7 +141,9 @@
             </tbody>
           </table>
           <div class="line"></div>
-          <div class="right total">Total: $${total.toFixed(2)}</div>
+          <div class="right total">Total: $${data.total_usd.toFixed(2)}</div>
+          <div class="right total">Total Bs: ${data.total_bs.toFixed(2)}</div>
+          <div class="right" style="font-size: 10px;">(Tasa: ${data.tasa.toFixed(2)})</div>
           <div class="footer">
             <p>¡Gracias por su compra!</p>
             <p>Por favor conserve este ticket.</p>

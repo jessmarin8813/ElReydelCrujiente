@@ -1,5 +1,5 @@
 <?php
-// api/dashboard_stats.php
+// api/dashboard_stats_fixed.php
 header('Content-Type: application/json');
 include 'conexion.php';
 
@@ -18,9 +18,12 @@ $sql = "SELECT DATE(fecha) as fecha, SUM(total_usd) as total
         AND estado = 'pagado'
         GROUP BY DATE(fecha) 
         ORDER BY fecha ASC";
+        
 $res = $conn->query($sql);
-while($row = $res->fetch_assoc()) {
-    $response['ventas_semanales'][] = $row;
+if ($res) {
+    while($row = $res->fetch_assoc()) {
+        $response['ventas_semanales'][] = $row;
+    }
 }
 
 // 2. Top 5 Productos (Histórico)
@@ -30,30 +33,42 @@ $sql = "SELECT p.nombre, SUM(pd.cantidad) as total_qty
         GROUP BY p.nombre 
         ORDER BY total_qty DESC 
         LIMIT 5";
+        
 $res = $conn->query($sql);
-while($row = $res->fetch_assoc()) {
-    $response['top_productos'][] = $row;
+if ($res) {
+    while($row = $res->fetch_assoc()) {
+        $response['top_productos'][] = $row;
+    }
 }
 
 // 3. Métodos de Pago (Histórico)
 $sql = "SELECT metodo, SUM(monto_usd) as total 
         FROM pagos 
         GROUP BY metodo";
+        
 $res = $conn->query($sql);
-while($row = $res->fetch_assoc()) {
-    $response['metodos_pago'][] = $row;
+if ($res) {
+    while($row = $res->fetch_assoc()) {
+        $response['metodos_pago'][] = $row;
+    }
 }
 
 // 4. Totales Rápidos (Hoy y Este Mes)
 // Hoy
 $sql = "SELECT SUM(total_usd) as total FROM pedidos WHERE DATE(fecha) = CURDATE() AND estado = 'pagado'";
-$row = $conn->query($sql)->fetch_assoc();
-$response['resumen_hoy'] = floatval($row['total'] ?? 0);
+$res = $conn->query($sql);
+if ($res) {
+    $row = $res->fetch_assoc();
+    $response['resumen_hoy'] = floatval($row['total'] ?? 0);
+}
 
 // Mes
 $sql = "SELECT SUM(total_usd) as total FROM pedidos WHERE MONTH(fecha) = MONTH(CURDATE()) AND YEAR(fecha) = YEAR(CURDATE()) AND estado = 'pagado'";
-$row = $conn->query($sql)->fetch_assoc();
-$response['resumen_mes'] = floatval($row['total'] ?? 0);
+$res = $conn->query($sql);
+if ($res) {
+    $row = $res->fetch_assoc();
+    $response['resumen_mes'] = floatval($row['total'] ?? 0);
+}
 
 echo json_encode($response);
 ?>
