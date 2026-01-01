@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <nav>
+  <nav>
     <a href="index.php">🧾 Nuevo Pedido</a> |
     <a href="productos.html">🍽️ Agregar Productos</a> |
     <a href="tasa.html">💱 Tasa BCV</a> |
@@ -26,7 +26,7 @@
     <input type="number" id="precio" placeholder="Precio" step="0.01" required>
     <button type="submit">Guardar</button>
   </form>
-  <h3>ðŸ“¦ Productos registrados</h3>
+  <h3>📦 Productos registrados</h3>
   <div id="moduloProductos">
     <table>
       <thead>
@@ -34,7 +34,7 @@
           <th>Nombre</th>
           <th>Precio ($)</th>
           <th>Estado</th>
-          <th>AcciÃ³n</th>
+          <th>Acción</th>
         </tr>
       </thead>
       <tbody id="tablaProductos"></tbody>
@@ -54,11 +54,11 @@
         .then(res => res.text())
         .then(msg => {
           alert(msg);
-          cargarProductos(); // âœ… recarga la tabla despuÃ©s de guardar
+          cargarProductos(); // ✅ recarga la tabla después de guardar
         });
     };
 
-    // âœ… carga los productos al abrir la pÃ¡gina
+    // ✅ carga los productos al abrir la página
     document.addEventListener('DOMContentLoaded', cargarProductos);
   </script>
 

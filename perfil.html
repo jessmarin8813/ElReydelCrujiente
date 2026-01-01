@@ -51,34 +51,34 @@
 
 <body>
     <!-- Nav will be injected/updated later -->
-      <nav>
-    <a href="index.php">🧾 Nuevo Pedido</a> |
-    <a href="productos.html">🍽️ Agregar Productos</a> |
-    <a href="tasa.html">💱 Tasa BCV</a> |
-    <a href="ventas.html">📊 Ventas</a> |
-    <a href="deudores.html">⚠️ Deudores</a> |
-    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-    <a href="combos.html">🧃 Combos</a> |
-    <a href="perfil.html">🔒 Mi Perfil</a>
-  </nav>
+    <nav>
+        <a href="index.php">🧾 Nuevo Pedido</a> |
+        <a href="productos.html">🍽️ Agregar Productos</a> |
+        <a href="tasa.html">💱 Tasa BCV</a> |
+        <a href="ventas.html">📊 Ventas</a> |
+        <a href="deudores.html">⚠️ Deudores</a> |
+        <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+        <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+        <a href="combos.html">🧃 Combos</a> |
+        <a href="perfil.html">🔒 Mi Perfil</a>
+    </nav>
 
     <div class="profile-container">
-        <h2>ðŸ”’ Cambiar ContraseÃ±a</h2>
-        <p style="color:#666; margin-bottom:20px;">Por seguridad, ingresa tu contraseÃ±a actual para establecer una
+        <h2> Cambiar Contraseña</h2>
+        <p style="color:#666; margin-bottom:20px;">Por seguridad, ingresa tu Contraseña actual para establecer una
             nueva.</p>
 
         <form id="formPerfil">
-            <label>ContraseÃ±a Actual</label>
+            <label>Contraseña Actual</label>
             <input type="password" id="claveActual" required>
 
-            <label>Nueva ContraseÃ±a</label>
+            <label>Nueva Contraseña</label>
             <input type="password" id="claveNueva" required>
 
-            <label>Confirmar Nueva ContraseÃ±a</label>
+            <label>Confirmar Nueva Contraseña</label>
             <input type="password" id="claveConfirmar" required>
 
-            <button type="submit" class="btn-save">Actualizar ContraseÃ±a</button>
+            <button type="submit" class="btn-save">Actualizar Contraseña</button>
         </form>
     </div>
 
@@ -91,12 +91,12 @@
             const confirmar = document.getElementById('claveConfirmar').value;
 
             if (nueva !== confirmar) {
-                alert('âŒ Las nuevas contraseÃ±as no coinciden.');
+                alert('Las nuevas contraseñas no coinciden.');
                 return;
             }
 
             if (nueva.length < 4) {
-                alert('âŒ La contraseÃ±a es muy corta (mÃ­nimo 4 caracteres).');
+                alert('La contraseña es muy corta (mínimo 4 caracteres).');
                 return;
             }
 
@@ -109,14 +109,14 @@
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    alert('âœ… ' + data.mensaje);
+                    alert('' + data.mensaje);
                     document.getElementById('formPerfil').reset();
                 } else {
-                    alert('âŒ ' + (data.error || 'Error al actualizar'));
+                    alert(' ' + (data.error || 'Error al actualizar'));
                 }
             } catch (err) {
                 console.error(err);
-                alert('âŒ Error de conexiÃ³n');
+                alert('Error de conexión');
             }
         });
     </script>
