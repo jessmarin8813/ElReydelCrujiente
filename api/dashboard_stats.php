@@ -24,10 +24,10 @@ while($row = $res->fetch_assoc()) {
 }
 
 // 2. Top 5 Productos (Histórico)
-// Usamos alias pd para detalle y p para producto si fuera join, pero aqui detalle tiene nombre
-$sql = "SELECT nombre, SUM(cantidad) as total_qty 
-        FROM pedido_detalles 
-        GROUP BY nombre 
+$sql = "SELECT p.nombre, SUM(pd.cantidad) as total_qty 
+        FROM pedido_detalles pd
+        JOIN productos p ON pd.producto_id = p.id
+        GROUP BY p.nombre 
         ORDER BY total_qty DESC 
         LIMIT 5";
 $res = $conn->query($sql);

@@ -58,19 +58,19 @@
 </head>
 
 <body>
-      <nav>
-    <a href="index.php">🧾 Nuevo Pedido</a> |
-    <a href="productos.html">🍽️ Agregar Productos</a> |
-    <a href="tasa.html">💱 Tasa BCV</a> |
-    <a href="ventas.html">📊 Ventas</a> |
-    <a href="dashboard.html">📈 Dashboard</a> |
-    <a href="deudores.html">⚠️ Deudores</a> |
-    <a href="resumen_caja.html">💰 Resumen de Caja</a> |
-    <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
-    <a href="combos.html">🧃 Combos</a> |
-    <a href="perfil.html">🔒 Mi Perfil</a>
-  </nav>
-<h2>ðŸ“ˆ Dashboard EstadÃ­stico</h2>
+    <nav>
+        <a href="index.php">🧾 Nuevo Pedido</a> |
+        <a href="productos.html">🍽️ Agregar Productos</a> |
+        <a href="tasa.html">💱 Tasa BCV</a> |
+        <a href="ventas.html">📊 Ventas</a> |
+        <a href="dashboard.html">📈 Dashboard</a> |
+        <a href="deudores.html">⚠️ Deudores</a> |
+        <a href="resumen_caja.html">💰 Resumen de Caja</a> |
+        <a href="productos_vendidos.html">📦 Productos Vendidos</a> |
+        <a href="combos.html">🧃 Combos</a> |
+        <a href="perfil.html">🔒 Mi Perfil</a>
+    </nav>
+    <h2>📈 Dashboard Estadístico</h2>
 
     <div class="kpi-container">
         <div class="kpi-card">
@@ -85,15 +85,15 @@
 
     <div class="dashboard-grid">
         <div class="card">
-            <h3>Ventas Ãšltimos 7 DÃ­as ($)</h3>
+            <h3>Ventas Últimos 7 Días ($)</h3>
             <canvas id="chartVentas"></canvas>
         </div>
         <div class="card">
-            <h3>Top 5 Productos MÃ¡s Vendidos</h3>
+            <h3>Top 5 Productos Más Vendidos</h3>
             <canvas id="chartProductos"></canvas>
         </div>
         <div class="card">
-            <h3>MÃ©todos de Pago (HistÃ³rico)</h3>
+            <h3>Métodos de Pago (Histórico)</h3>
             <canvas id="chartPagos"></canvas>
         </div>
     </div>
@@ -155,7 +155,7 @@
 
             } catch (err) {
                 console.error(err);
-                alert('Error cargando estadÃ­sticas');
+                alert('Error cargando estadísticas');
             }
         }
         loadDashboard();
